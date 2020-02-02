@@ -4,24 +4,32 @@
   "description": "Twitter Clone",
   "scripts": {
     "dev-start": "nodemon --exec babel-node ./index.js --env",
-    "build": "rimraf build/* && babel ./ -d build --ignore 'node_modules','coverage' ",
+    "clear": "rm -rf build",
+    "build": "npm run clear && babel index.js --out-dir build",
     "start": "node build/index.js",
     "test": "NODE_ENV=test jest --detectOpenHandles --forceExit -u --coverage ",
     "test:watch": "NODE_ENV=test jest -u --coverage --watch",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "db-config": "./api/models/configure.sh",
     "test-db-config": "./api/models/configureTest.sh",
-    "tables-setup-heroku": "heroku pg:psql -f ./api/models/dbMigrationAndSeeder.sql"
+    "postinstall": "npm run build",
+    "postdeploy": "psql -U postgres -f api/models/test-db.sql",
+    "coveralls": "nyc report --reporter=text-lcov | coveralls",
+    "tables-setup-heroku": "heroku pg:psql -f ./api/models/dbMigrationAndSeeder.sql",
+    "heroku-postbuild": "npm run build"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ebzeal/mock-PL.git"
+    "url": "git+https://github.com/ebzeal/twitter-clone.git"
+  },
+  "engines": {
+    "node": "10.x"
   },
   "keywords": [],
   "author": "Olusola Ajayi <ebenezerajayi@gmail.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ebzeal/mock-PL/issues"
+    "url": "https://github.com/ebzeal/twitter-clone/issues"
   },
   "devDependencies": {
     "@babel/cli": "^7.6.3",
@@ -41,8 +49,24 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.6.3",
+    "coveralls": "^3.0.9",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "nyc": "^15.0.0",
     "pg": "^7.18.1"
+  },
+  "nyc": {
+    "require": [
+      "babel/register"
+    ],
+    "reporter": [
+      "lcov",
+      "text",
+      "html"
+    ],
+    "exclude": [
+      "**/*.spec.js",
+      "/server/test/*.js`"
+    ]
   }
 }
