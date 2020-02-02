@@ -36,7 +36,6 @@ These tests ensure that no functionality is broken
 
 NodeJs (JavaScript or TypeScript)
 MongoDB
-Redis
 Docker
 POSTMAN
 Jest

@@ -8,11 +8,10 @@
     "build": "npm run clear && babel index.js --out-dir build",
     "start": "node build/index.js",
     "test": "NODE_ENV=test jest --detectOpenHandles --forceExit -u --coverage ",
-    "test:watch": "NODE_ENV=test jest -u --coverage --watch",
+    "test-watch": "NODE_ENV=test jest -u --coverage --watch",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "db-config": "./api/models/configure.sh",
     "test-db-config": "./api/models/configureTest.sh",
-    "postinstall": "npm run build",
     "postdeploy": "psql -U postgres -f api/models/test-db.sql",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "tables-setup-heroku": "heroku pg:psql -f ./api/models/dbMigrationAndSeeder.sql",
@@ -45,13 +44,18 @@
     "eslint-plugin-import": "^2.18.2",
     "jest": "^24.9.0",
     "nodemon": "^1.19.3",
-    "prettier-eslint-cli": "^5.0.0"
+    "prettier-eslint-cli": "^5.0.0",
+    "supertest": "^4.0.2"
   },
   "dependencies": {
     "@babel/runtime": "^7.6.3",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
     "coveralls": "^3.0.9",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-validator": "^6.4.0",
+    "jsonwebtoken": "^8.5.1",
     "nyc": "^15.0.0",
     "pg": "^7.18.1"
   },
