@@ -1,0 +1,20 @@
+sudo: required
+language: node_js
+node_js:
+  - 'stable'
+install: npm install
+cache:
+directories:
+  - node_modules
+addons:
+  postgresql: '9.6'
+services:
+  - postgresql
+before_script:
+  - psql -c 'create user ebzeal with superuser createdb createrole;' -U postgres
+  - psql -c 'create database twitter_clone;' -U postgres
+  - psql -c 'GRANT ALL PRIVILEGES ON DATABASE twitter_clone TO ebzeal;' -U postgres
+script:
+  - npm test
+after_success:
+  - npm run coverage
