@@ -6,7 +6,12 @@
     "dev-start": "nodemon --exec babel-node ./index.js --env",
     "build": "rimraf build/* && babel ./ -d build --ignore 'node_modules','coverage' ",
     "start": "node build/index.js",
-    "test": "jest"
+    "test": "NODE_ENV=test jest --detectOpenHandles --forceExit -u --coverage ",
+    "test:watch": "NODE_ENV=test jest -u --coverage --watch",
+    "coverage": "nyc report --reporter=text-lcov | coveralls",
+    "db-config": "./api/models/configure.sh",
+    "test-db-config": "./api/models/configureTest.sh",
+    "tables-setup-heroku": "heroku pg:psql -f ./api/models/dbMigrationAndSeeder.sql"
   },
   "repository": {
     "type": "git",
@@ -36,6 +41,8 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.6.3",
-    "express": "^4.17.1"
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "pg": "^7.18.1"
   }
 }
