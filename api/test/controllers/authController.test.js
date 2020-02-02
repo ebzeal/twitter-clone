@@ -110,7 +110,6 @@ describe('new user sign up POST/', () => {
         const response = await request
             .post('/api/v1/auth/signup')
             .send(userWithSamePhoneNumber)
-        console.log("TCL: response", response.body)
         const { status, data: { statusCode, message, payload } } = response.body;
         expect(status).toEqual('failure')
         expect(statusCode).toBe(400)

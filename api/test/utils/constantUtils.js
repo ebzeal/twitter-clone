@@ -1,0 +1,2 @@
+// this token wil expire Sun Jan 23 2022
+export const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsInVzZXJFbWFpbCI6Im9sdUBtZS5jb20iLCJ1c2VyUGhvbmUiOiIrMjM0ODA4MDk5NDAzMSIsImlhdCI6MTU4MDY5MTUxMCwiZXhwIjoxNjQyODk5NTEwfQ.gIVF2zFMO3lqFTSYQfKFpsPJ4twMdW17ygOKVM_X6co';

@@ -1,0 +1,26 @@
+sudo: required
+language: node_js
+node_js:
+  - 'stable'
+cache:
+directories:
+  - node_modules
+addons:
+  postgresql: "9.6"
+services:
+  - postgresql
+before_script:
+  - sudo psql -c 'create database twitter_clone_test' -U postgres 
+  - sudo psql -c "CREATE USER ebzeal WITH PASSWORD 'ebzeal';" -U postgres
+  - sudo psql -f api/models/testDbMigrationAndSeeder.sql;
+  - psql -c 'GRANT ALL PRIVILEGES ON DATABASE twitter_clone_test TO ebzeal;' -U postgres
+env:
+  global:
+    - PGUSER=postgres
+    - PGPORT=5432
+script:
+  - npm test
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+after_success: 
+  - ./cc-test-reporter after-build
