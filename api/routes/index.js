@@ -5,6 +5,7 @@ import accessMiddleware from '../middlewares/accessMiddleware';
 import AuthController from '../controllers/authController';
 import TweetController from '../controllers/tweetControllers';
 import UserController from '../controllers/userController';
+import SearchController from '../controllers/searchController';
 
 import { signUpSchema, logInSchema } from '../middlewares/validations/authValidations';
 import handleValidationErrors from '../middlewares/validations/handleValidationErrors';
@@ -26,5 +27,7 @@ route.delete('/tweet/:id', accessMiddleware.authoriseUser, TweetController.delet
 
 route.post('/follow/:id', accessMiddleware.authoriseUser, UserController.userFollow);
 route.get('/user/:id', accessMiddleware.authoriseUser, UserController.viewOwnTimeline);
+
+route.get('/search', accessMiddleware.authoriseUser, SearchController.searchAll);
 
 export default route;

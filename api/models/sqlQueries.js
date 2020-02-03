@@ -21,6 +21,9 @@ const followUserQuery = 'INSERT INTO follows(follower_id, followed_id)VALUES($1,
 const searchFollowerQuery = 'SELECT FROM follows WHERE follower_id=$1 AND followed_id=$2';
 const getUserTweetsQuery = 'SELECT * FROM tweets t INNER JOIN replies r ON $1=r.tweet_id AND $1=t.id';
 
+const searchTweetQuery = "SELECT user_id, tweet FROM tweets WHERE tweet ILIKE '%' || $1 || '%'";
+const searchUserQuery = "SELECT * FROM users WHERE userName ILIKE ' % ' || $1 || ' % ' OR email ILIKE '%' || $1 || '%'";
+
 
 export {
   queryUserByEmail,
@@ -38,5 +41,7 @@ export {
   deleteTweetQuery,
   followUserQuery,
   searchFollowerQuery,
-  getUserTweetsQuery
+  getUserTweetsQuery,
+  searchTweetQuery,
+  searchUserQuery
 };
