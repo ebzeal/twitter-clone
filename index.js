@@ -6,10 +6,10 @@ import YAML from 'yamljs';
 
 import routes from './api/routes';
 
-const app = express();
-
 env.config();
-const swaggerDocument = YAML.load('swagger.yaml');
+const app = express();
+const swaggerDocument = process.env.NODE_ENV === 'test' ? null : YAML.load('swagger.yaml');
+
 
 app.use(cors());
 
