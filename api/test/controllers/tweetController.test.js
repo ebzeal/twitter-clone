@@ -34,7 +34,6 @@ describe('creating and using tweets/', () => {
             .post('/api/v1/tweet')
             .set('Authorization', `Bearer ${token}`)
             .send(newTweet)
-        console.log("TCL: response", response.body)
         const { status, data: { statusCode, message, payload } } = response.body;
         expect(status).toEqual('success')
         expect(statusCode).toBe(201)
@@ -93,7 +92,6 @@ describe('creating and using tweets/', () => {
         const response = await request
             .delete('/api/v1/tweet/15')
             .set('Authorization', `Bearer ${token}`)
-        console.log("TCL: response", response.body)
         const { status, data: { statusCode, message, payload } } = response.body;
         expect(status).toEqual('success')
         expect(statusCode).toBe(201)

@@ -10,7 +10,6 @@ DROP TABLE IF EXISTS users, tweets, tags, replies, follows, userProfile;
         dateCreated DATE NOT NULL DEFAULT CURRENT_DATE
       );
 
-
    CREATE TABLE IF NOT EXISTS
         tweets(
         id SERIAL PRIMARY KEY,
@@ -18,8 +17,6 @@ DROP TABLE IF EXISTS users, tweets, tags, replies, follows, userProfile;
         tweet VARCHAR(280),
         dateCreated DATE NOT NULL DEFAULT CURRENT_DATE
       );
-  
-
 
 CREATE TABLE IF NOT EXISTS
       replies(
@@ -40,7 +37,6 @@ CREATE TABLE IF NOT EXISTS
         dateCreated DATE NOT NULL DEFAULT CURRENT_DATE
       );
 
-
 CREATE TABLE IF NOT EXISTS
       mentions(
         id SERIAL PRIMARY KEY,
@@ -56,7 +52,7 @@ CREATE TABLE IF NOT EXISTS
       follows(
         id SERIAL PRIMARY KEY,
         follower_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-        following_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+        followed_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
         dateAdded DATE NOT NULL DEFAULT CURRENT_DATE
       );
 
@@ -89,4 +85,4 @@ INSERT INTO replies(user_id, tweet_id, tweet_reply)VALUES(1,2,'If somebody creat
 
 Every generation wants to reinvent their own tools, so now web dev stacks are a train-wreck. Like low-orbit space-junk: Ever-present+ever-growing'),(1,2,'This is purrrrfect');
 
-INSERT INTO follows(follower_id, following_id)VALUES(1, 2);
+INSERT INTO follows(follower_id, followed_id)VALUES(1, 2);
