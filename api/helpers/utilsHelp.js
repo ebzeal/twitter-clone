@@ -6,16 +6,6 @@ import 'dotenv/config';
 class UtilHelp {
   /**
    * @static
-   * @description a simple function that trims a string
-   * @param {string} param
-   * @returns {string} in a template literal
-   */
-  static trimMe(param) {
-    return param.trim();
-  }
-
-  /**
-   * @static
    * @description a function for sanitising an array of input strings
    * @param {object} textObj
    * @returns {object} sanitised text
@@ -29,16 +19,6 @@ class UtilHelp {
       newObj[key] = newVal;
     }
     return newObj;
-  }
-
-  /**
-   * @static
-   * @description a function for sanitising input fields in express-validator schema
-   * @param {string} param
-   * @returns {string} in a template literal
-   */
-  static sanitize(param) {
-    return `options: ${param} => (typeof ${param} === 'string' ? ${param}.trim() : null)`;
   }
 }
 

@@ -3,7 +3,7 @@ import tokenHelp from '../helpers/tokenHelp';
 import query from '../config/dbConnection';
 import passwordHelp from '../helpers/passwordHelp';
 import response from '../helpers/resHelp';
-import utils from '../helpers/utilsHelp';
+import UtilHelp from '../helpers/utilsHelp';
 import {
   queryUserByEmail, queryUserByName, queryUserByPhone, queryInsertUser, queryUser
 } from '../models/sqlQueries';
@@ -21,7 +21,7 @@ class AuthController {
    */
   static async signUp(req, res) {
     try {
-      const inputObj = utils.cleanInput(req.body);
+      const inputObj = UtilHelp.cleanInput(req.body);
 
       const { email, userName, phone } = inputObj;
 
@@ -71,7 +71,7 @@ class AuthController {
    */
   static async logIn(req, res) {
     try {
-      const inputObj = utils.cleanInput(req.body);
+      const inputObj = UtilHelp.cleanInput(req.body);
 
       const { user } = inputObj;
 

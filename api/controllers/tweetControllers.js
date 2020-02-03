@@ -24,14 +24,10 @@ class TweetController {
   static async createTweet(req, res) {
     try {
       const { userId } = req.user;
-      console.log('TCL: TweetController -> createTweet -> userId', userId);
       const { tweet } = req.body;
 
       const { rows } = await query(addTweetQuery, [userId, tweet]);
-      console.log('TCL: TweetController -> createTweet -> rows', rows[0]);
-
       const savedTweet = await TweetHelpers.getTweet(rows[0].id);
-      console.log('TCL: TweetController -> createTweet -> savedTweet', savedTweet);
 
       await TweetHelpers.addTagsAndMentions(tweet, userId, savedTweet.id, 'aTweet');
 

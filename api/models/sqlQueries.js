@@ -17,6 +17,10 @@ const tweetByIdQuery = 'SELECT * FROM tweets WHERE id=$1';
 const addReplyQuery = 'INSERT INTO replies(user_id, tweet_id, tweet_reply)VALUES($1, $2, $3) returning *';
 const deleteTweetQuery = 'DELETE FROM tweets WHERE id=$1';
 
+const followUserQuery = 'INSERT INTO follows(follower_id, followed_id)VALUES($1, $2) returning *';
+const searchFollowerQuery = 'SELECT FROM follows WHERE follower_id=$1 AND followed_id=$2';
+const getUserTweetsQuery = 'SELECT * FROM tweets t INNER JOIN replies r ON $1=r.tweet_id AND $1=t.id';
+
 
 export {
   queryUserByEmail,
@@ -31,5 +35,8 @@ export {
   addMentionsQuery,
   tweetByIdQuery,
   addReplyQuery,
-  deleteTweetQuery
+  deleteTweetQuery,
+  followUserQuery,
+  searchFollowerQuery,
+  getUserTweetsQuery
 };
