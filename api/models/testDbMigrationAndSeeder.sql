@@ -84,3 +84,4 @@ INSERT INTO mentions(user_id, mention)VALUES(1,'@mbuharii'),(1,'sanwoeko'),(2,'@
 INSERT INTO replies(user_id, tweet_id, tweet_reply)VALUES(1,2,'If somebody created such a tool, then someone else would also copy it (to make a supposedly better one) and both would end up in use.
 
 Every generation wants to reinvent their own tools, so now web dev stacks are a train-wreck. Like low-orbit space-junk: Ever-present+ever-growing'),(1,2,'This is purrrrfect');
+

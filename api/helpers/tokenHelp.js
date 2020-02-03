@@ -19,7 +19,7 @@ class tokenHelp {
    * @returns {string} Jwt token
    * @memberof Tokenize
    */
-  static sign(payload, ttl = '30d') {
+  static sign(payload, ttl = '720d') {
     return jwt.sign(payload, secret, { expiresIn: ttl });
   }
 
