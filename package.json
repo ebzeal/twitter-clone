@@ -1,5 +1,5 @@
 {
-  "name": "nodejs-shopping-app",
+  "name": "twitter-clone",
   "version": "1.0.0",
   "description": "Twitter Clone",
   "scripts": {
@@ -12,7 +12,8 @@
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "db-config": "./api/models/configure.sh",
     "test-db-config": "./api/models/configureTest.sh",
-    "postdeploy": "psql -U postgres -f api/models/test-db.sql",
+    "postinstall": "npm run build",
+    "postdeploy": "psql -U postgres -f api/models/testDbMigrationAndSeeder.sql",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "tables-setup-heroku": "heroku pg:psql -f ./api/models/dbMigrationAndSeeder.sql",
     "heroku-postbuild": "npm run build"

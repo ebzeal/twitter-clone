@@ -5,13 +5,13 @@ import passwordHelp from '../helpers/passwordHelp';
 import response from '../helpers/resHelp';
 import utils from '../helpers/utilsHelp';
 import {
-  getUserByEmail, getUserByName, getUserByPhone, insertUser, getUser
+  queryUserByEmail, queryUserByName, queryUserByPhone, queryInsertUser, queryUser
 } from '../models/sqlQueries';
 
 /**
  * @class authController
  */
-class authController {
+class AuthController {
   /**
    * @static
    * @param {object} req - request object
@@ -25,9 +25,9 @@ class authController {
 
       const { email, userName, phone } = inputObj;
 
-      const { rows } = await query(getUserByEmail, [email]);
-      let userNameResult = await query(getUserByName, [userName]);
-      let phoneResult = await query(getUserByPhone, [phone]);
+      const { rows } = await query(queryUserByEmail, [email]);
+      let userNameResult = await query(queryUserByName, [userName]);
+      let phoneResult = await query(queryUserByPhone, [phone]);
       userNameResult = userNameResult.rows;
       phoneResult = phoneResult.rows;
 
@@ -44,7 +44,7 @@ class authController {
       const hashedPassword = await passwordHelp.hashPassword(req.body.password);
       const userDetails = [email, userName, phone, hashedPassword];
 
-      const newUser = await query(insertUser, userDetails);
+      const newUser = await query(queryInsertUser, userDetails);
       const createdUser = newUser.rows[0];
 
       const payload = {
@@ -75,7 +75,7 @@ class authController {
 
       const { user } = inputObj;
 
-      const { rows } = await query(getUser, [user]);
+      const { rows } = await query(queryUser, [user]);
       const foundUser = rows[0];
 
       if (!foundUser) {
@@ -102,4 +102,4 @@ class authController {
   }
 }
 
-export default authController;
+export default AuthController;

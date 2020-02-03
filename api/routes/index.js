@@ -1,6 +1,9 @@
 import { Router } from 'express';
 
-import authController from '../controllers/authController';
+import accessMiddleware from '../middlewares/accessMiddleware';
+
+import AuthController from '../controllers/authController';
+import TweetController from '../controllers/tweetControllers';
 
 import { signUpSchema, logInSchema } from '../middlewares/validations/authValidations';
 import handleValidationErrors from '../middlewares/validations/handleValidationErrors';
@@ -12,7 +15,12 @@ route.get('/', (req, res) => {
   res.status(200).json('Welcome to TweetClone');
 });
 
-route.post('/auth/signup', signUpSchema, handleValidationErrors, authController.signUp);
-route.post('/auth/login', logInSchema, handleValidationErrors, authController.logIn);
+route.post('/auth/signup', signUpSchema, handleValidationErrors, AuthController.signUp);
+route.post('/auth/login', logInSchema, handleValidationErrors, AuthController.logIn);
+
+route.post('/tweet', accessMiddleware.authoriseUser, TweetController.createTweet);
+route.get('/tweet/:id', accessMiddleware.authoriseUser, TweetController.readTweet);
+route.post('/tweet/:id', accessMiddleware.authoriseUser, TweetController.replyTweet);
+route.delete('/tweet/:id', accessMiddleware.authoriseUser, TweetController.deleteTweet);
 
 export default route;
