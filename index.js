@@ -1,16 +1,21 @@
 import express from 'express';
 import cors from 'cors';
 import env from 'dotenv';
+import swaggerUi from 'swagger-ui-express';
+import YAML from 'yamljs';
 
 import routes from './api/routes';
 
 const app = express();
+
+env.config();
+const swaggerDocument = YAML.load('swagger.yaml');
+
 app.use(cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-env.config();
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 const port = process.env.PORT || 5000;
 

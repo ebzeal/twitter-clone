@@ -1,12 +1,16 @@
-[![Build Status](https://travis-ci.com/ebzeal/twitter-clone.svg?branch=master)](https://travis-ci.com/ebzeal/twitter-clone)
+<!-- [![Build Status](https://travis-ci.com/ebzeal/twitter-clone.svg?branch=master)](https://travis-ci.com/ebzeal/twitter-clone) -->
 [![Maintainability](https://api.codeclimate.com/v1/badges/ec09a0009b56c4ba9f87/maintainability)](https://codeclimate.com/github/ebzeal/twitter-clone/maintainability)
 
 # twitter-clone-backend
 
 A Twitter Clone API
 
-# Documentation
+Live link  https://ebzeal-twitter.herokuapp.com/api/v1
 
+# Documentation
+Open API:  https://ebzeal-twitter.herokuapp.com/docs/
+
+Postman: https://documenter.getpostman.com/view/6838819/SWTEbFmZ
 
 # Prerequisites
 

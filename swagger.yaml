@@ -1,0 +1,369 @@
+openapi: '3.0.0'
+info:
+  title: Twitter Clone
+  version: '1.0.0'
+  description: A mini clone of the twitter app.
+  contact:
+    name: Olusola Ajayi ebenezerajayi@gmail.com
+servers:
+  - url: https://ebzeal-twitter.herokuapp.com/api/v1/
+tags:
+  - name: Authentication
+    description: Authentication-related endpoints
+  - name: Users
+    description: User-related endpoints
+  - name: Tweets
+    description: Tweet-related endpoints
+  - name: Search
+    description: Search-related endpoints
+components:
+  schemas:
+    Error:
+      properties:
+        message:
+          description: Error message
+          type: string
+    User:
+      title: User
+      properties:
+        fullName:
+          type: string
+        userName:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          format: password
+        roleId:
+          type: string
+          default: 3ceb546e-054d-4c1d-8860-e27c209d4ae3
+        isVerified:
+          type: boolean
+        bio:
+          type: string
+        image:
+          type: string
+        getEmailsNotification:
+          type: boolean
+        getInAppNotification:
+          type: boolean
+        authTypeId:
+          type: string
+      additionalProperties: false
+      required:
+        - fullName
+        - userName
+        - email
+        - password
+        - roleId
+        - authTypeId
+      example:
+        email: olusola.ajayi@ebzeal.com
+        userName: ebzeal
+        password: Blahblah
+  responses:
+      Success:
+        description: Success
+      UserCreated:
+        description: New User Created
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      LoginSuccess:
+        description: Logged In Successfully
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      OwnUserRetrieved:
+        description: User sees own profile
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      ErrorBadRequest:
+        description: Bad Request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Error'
+      ErrorUnauthorized:
+        description: Unauthorized
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Error'
+      ErrorForbidden:
+        description: Forbidden
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Error'
+      ErrorNotFound:
+        description: Not Found
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Error'
+      ErrorUnsupportedMediaType:
+        description: Unsupported Media Type
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Error'
+      ErrorInternalServer:
+        description: Internal Server Error
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Error'   
+  securitySchemes:
+    bearerAuth:            # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT 
+paths:
+  /auth/signup:
+    post:
+      tags:
+        - Authentication
+      summary: Responds with token for access
+      description: Returns a JWT upon successful signup. 
+      requestBody:
+        description: User Credentials
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                email:
+                  type: string
+                  format: email
+                userName:
+                  type: string
+                phone:
+                  type: string
+                password:
+                  type: string
+                  format: password
+                confirmPassword:
+                  type: string
+                  format: password
+      responses:
+        '201':
+          $ref: '#/components/responses/LoginSuccess'
+        '400':
+          $ref: '#/components/responses/ErrorBadRequest'
+        '401':
+          $ref: '#/components/responses/ErrorUnauthorized'
+        '500':
+          $ref: '#/components/responses/ErrorInternalServer'
+  /auth/login:
+    post:
+      tags:
+        - Authentication
+      summary: Perform password-based authentication for login
+      description: Returns a JWT upon success
+      requestBody:
+        description: User Credentials
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                user:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '201':
+          $ref: '#/components/responses/LoginSuccess'
+        '400':
+          $ref: '#/components/responses/ErrorBadRequest'
+        '401':
+          $ref: '#/components/responses/ErrorUnauthorized'
+        '500':
+          $ref: '#/components/responses/ErrorInternalServer'
+  /follow/{userId}:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Users
+      summary: Method to follow another user
+      parameters:
+        - name: token
+          in: header
+          description: The token in the authentication header
+          required: true
+          schema:
+            type: string
+        - name: userId
+          in: path
+          description: ID of the User to follow
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/ErrorBadRequest'
+        '401':
+          $ref: '#/components/responses/ErrorUnauthorized'
+        '500':
+          $ref: '#/components/responses/ErrorInternalServer'
+  /user/{userId}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Users
+      summary: This method allows a user to view his own timeline only and not any other user's timeline..
+      parameters:
+        - name: userId
+          in: path
+          description: ID of the timeline to view
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/ErrorBadRequest'
+        '401':
+          $ref: '#/components/responses/ErrorUnauthorized'
+        '500':
+          $ref: '#/components/responses/ErrorInternalServer'
+  /tweet:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Tweets
+      summary: Allow users to post tweets
+      requestBody:
+        description: The tweet
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                content:
+                  type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/ErrorBadRequest'
+        '401':
+          $ref: '#/components/responses/ErrorUnauthorized'
+        '500':
+          $ref: '#/components/responses/ErrorInternalServer'
+    get:
+      tags:
+        - Comments
+      summary: Retrive all comments for an article
+      parameters:
+        - name: slug
+          in: path
+          description: slug of the article commenting on
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/ErrorBadRequest'
+        '401':
+          $ref: '#/components/responses/ErrorUnauthorized'
+        '500':
+          $ref: '#/components/responses/ErrorInternalServer'
+  /tweet/{tweetId}:
+    get:
+      tags:
+        - Tweets
+      summary: Retrieves a single tweet
+      parameters:
+        - name: tweetId
+          in: path
+          description: Id of requested tweet
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/ErrorBadRequest'
+        '401':
+          $ref: '#/components/responses/ErrorUnauthorized'
+        '500':
+          $ref: '#/components/responses/ErrorInternalServer'
+    post:
+      tags:
+        - Tweets
+      summary: Get one tweet by using the tweet id and Reply this tweet
+      parameters:
+        - name: tweetId
+          in: path
+          description: Id of requested tweet
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/ErrorBadRequest'
+        '401':
+          $ref: '#/components/responses/ErrorUnauthorized'
+        '500':
+          $ref: '#/components/responses/ErrorInternalServer'
+    delete:
+      tags:
+        - Tweets
+      summary: Delete a tweet. Users can only delete their own tweet
+      parameters:
+        - name: tweetId
+          in: path
+          description: Id of requested tweet
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/ErrorBadRequest'
+        '401':
+          $ref: '#/components/responses/ErrorUnauthorized'
+        '500':
+          $ref: '#/components/responses/ErrorInternalServer'
+  /search/{keyword}:
+    get:
+      tags:
+        - Search
+      summary: Search through tweets and users
+      description: Returns a a search result of tweets and users
+      parameters:
+        - name: keyword
+          in: path
+          description: The keyword being searched
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/ErrorBadRequest'
+        '401':
+          $ref: '#/components/responses/ErrorUnauthorized'
+        '500':
+          $ref: '#/components/responses/ErrorInternalServer'

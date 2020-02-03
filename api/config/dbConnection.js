@@ -9,8 +9,11 @@ env.config();
 const connectionEnv = () =>
   process.env.NODE_ENV === 'test' ? process.env.DATABASE_URL_TEST : process.env.DATABASE_URL;
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 const pool = new Pool({
   connectionString: connectionEnv(),
+  ssl: isProduction
 });
 pool.on('connect', () => {
   console.log('Connected to DB');
