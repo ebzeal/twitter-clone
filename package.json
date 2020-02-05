@@ -10,8 +10,6 @@
     "test": "NODE_ENV=test jest --detectOpenHandles --forceExit -u --coverage ",
     "test-watch": "NODE_ENV=test jest -u --coverage --watch",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "db-config": "./api/models/configure.sh",
-    "test-db-config": "./api/models/configureTest.sh",
     "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "tables-setup-heroku": "heroku pg:psql -f ./api/models/dbMigrationAndSeeder.sql"
   },
@@ -54,8 +52,10 @@
     "express": "^4.17.1",
     "express-validator": "^6.4.0",
     "jsonwebtoken": "^8.5.1",
+    "mongodb": "^3.5.2",
+    "mongoose": "^5.8.11",
     "nyc": "^15.0.0",
-    "pg": "^7.18.1",
+    "redis": "^2.8.0",
     "swagger-ui-express": "^4.1.3",
     "yamljs": "^0.3.0"
   },

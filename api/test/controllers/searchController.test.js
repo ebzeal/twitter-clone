@@ -3,16 +3,32 @@
 /* eslint-disable semi */
 /* eslint-disable indent */
 import supertest from 'supertest';
+import mongoose from 'mongoose';
 
 import app from '../../..';
 import { token } from '../utils/constantUtils';
-import query from '../../config/dbConnection';
+import tweetDB from '../../models/Tweet';
+
+const Tweet = tweetDB;
 
 const request = supertest(app);
 
-afterAll(async () => {
-  await query('DELETE FROM follows WHERE follower_id=$1', [1])
+const newTweet = {
+  tweet: "POW!!!@mikail @kiloni 'We We' released in 1992 by Angelique Kidjo. Could have said Burna boy picked the@mbural Anybody Vibe from here. But I won't. Africa still winning. We are one.#KobeBryant #Grammy"
+};
+
+
+beforeAll(async () => {
+  const aTweet = new Tweet(newTweet)
+  await aTweet.save();
 })
+
+afterAll(async () => {
+  await mongoose.connect(process.env.DATABASE_URL_TEST);
+  await mongoose.connection.collection('tweets').drop()
+  await mongoose.connection.collection('users').drop()
+})
+
 
 describe('full search', () => {
   it('allows search of users and tweets', async () => {

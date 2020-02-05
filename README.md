@@ -38,9 +38,9 @@ These tests ensure that no functionality is broken
 
 # Built With
 
-NodeJs (JavaScript or TypeScript)
+NodeJs (JavaScript ES6)
 MongoDB
-Docker
+Redis
 POSTMAN
 Jest
 Express

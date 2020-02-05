@@ -1,6 +1,11 @@
-import query from '../config/dbConnection';
+import userDB from '../models/User';
+import tweetDB from '../models/Tweet';
+
 import response from '../helpers/resHelp';
-import { followUserQuery, searchFollowerQuery, getUserTweetsQuery } from '../models/sqlQueries';
+
+const User = userDB;
+const Tweet = tweetDB;
+
 
 /**
  * @class UserController
@@ -20,18 +25,31 @@ class UserController {
       const { userId } = req.user;
       const { id } = req.params;
 
-      const isFollowed = await query(searchFollowerQuery, [userId, id]);
-      if (isFollowed.rowCount > 0) {
+      const isFollowed = await User.find({
+        following: {
+          $elemMatch: {
+            user: id
+          }
+        }
+      });
+
+      if (isFollowed.length > 0) {
         return response(res, 409, 'failure', 'You already follow this user');
       }
 
-      if (parseInt(id, 10) === userId) {
+      if (id === userId) {
         return response(res, 401, 'failure', 'You cannot follow yourself');
       }
 
-      const { rows } = await query(followUserQuery, [userId, id]);
+      const followingObject = { user: id };
 
-      if (rows.length > 0) response(res, 201, 'success', 'You just followed this user', '', rows[0]);
+      const followUser = await User.update({ _id: userId }, {
+        $push: {
+          following: followingObject
+        }
+      });
+
+      if (followUser) return response(res, 201, 'success', 'You just followed this user', '');
     } catch (err) {
       return response(res, 500, 'failure', '', err.message);
     }
@@ -50,13 +68,13 @@ class UserController {
       const { id } = req.params;
       const { userId } = req.user;
 
-      if (parseInt(id, 10) !== userId) {
+      if (id !== userId) {
         return response(res, 401, 'failure', 'You can only view your own timeline');
       }
 
-      const tweets = await query(getUserTweetsQuery, [id]);
+      const tweets = await Tweet.find({ user: id });
 
-      return tweets.rowCount > 0 ? response(res, 201, 'success', 'User timeline', '', tweets.rows) : response(res, 200, 'success', 'No tweets yet', '', tweets.rowCount);
+      return tweets ? response(res, 201, 'success', 'User timeline', '', tweets) : response(res, 200, 'success', 'No tweets yet', '', tweets);
     } catch (err) {
       return response(res, 500, 'failure', '', err.message);
     }
