@@ -26,11 +26,12 @@ beforeAll(async () => {
 afterAll(async () => {
   await mongoose.connect(process.env.DATABASE_URL_TEST);
   await mongoose.connection.collection('tweets').drop()
-  await mongoose.connection.collection('users').drop()
+  mongoose.disconnect()
 })
 
 
 describe('full search', () => {
+  jest.setTimeout(30000);
   it('allows search of users and tweets', async () => {
     const response = await request
       .get('/api/v1/search?keyword=mo')

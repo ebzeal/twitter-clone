@@ -1,9 +1,16 @@
+import redis from 'redis';
 import TweetHelpers from '../helpers/tweetHelp';
 import response from '../helpers/resHelp';
 
 import tweetDB from '../models/Tweet';
 
 const Tweet = tweetDB;
+
+const portRedis = process.env.REDIS_URI || 6379;
+
+const host = process.env.NODE_ENV === 'production' ? { host: 'redis' } : null;
+
+const redisClient = redis.createClient({ host, port: portRedis });
 
 /**
  * @class TweetController
@@ -51,6 +58,8 @@ class TweetController {
       const { id } = req.params;
 
       const tweet = await TweetHelpers.getTweet(id);
+
+      if (tweet) redisClient.setex(id, 3600, JSON.stringify(tweet));
 
       return tweet ? response(res, 201, 'success', 'Tweet retrieved', '', tweet) : response(res, 404, 'failure', 'Tweet does not exist', '');
     } catch (err) {

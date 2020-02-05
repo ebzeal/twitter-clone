@@ -51,6 +51,7 @@ afterAll(async () => {
     await mongoose.connection.collection('tweets').drop()
     await mongoose.connection.collection('tags').drop()
     await mongoose.connection.collection('mentions').drop()
+    mongoose.disconnect()
 })
 
 describe('creating and using tweets/', () => {

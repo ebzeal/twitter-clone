@@ -38,9 +38,8 @@ beforeAll(async () => {
 afterAll(async () => {
   await mongoose.connect(process.env.DATABASE_URL_TEST);
   await mongoose.connection.collection('users').drop()
+  await new Promise((resolve) => setTimeout(() => resolve(), 1000));
 })
-
-const theUserId = (tokenHelp.verify(token)).id;
 
 describe('user follows', () => {
   it('allows a user to follow another', async () => {
@@ -57,6 +56,7 @@ describe('user follows', () => {
 
 
 describe('timeline views', () => {
+  jest.setTimeout(30000);
   it('stops a user from viewing another user\'s timeline', async () => {
     const response = await request
       .get('/api/v1/user/5e396f2dbe77b11373fc327e')
