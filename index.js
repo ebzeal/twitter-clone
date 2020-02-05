@@ -18,7 +18,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
-const mongoURI = process.env.NODE_ENV !== 'test' ? process.env.DATABASE_URL : process.env.DATABASE_URL_TEST;
+const mongoURI = process.env.NODE_ENV !== 'test' ? process.env.PROD_MONGODB : process.env.DATABASE_URL_TEST;
 
 const port = process.env.PORT || 5000;
 

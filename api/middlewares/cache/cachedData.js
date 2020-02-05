@@ -1,14 +1,7 @@
 /* eslint-disable indent */
-
-import redis from 'redis';
+import redisClient from '../../config/redisConfig';
 import response from '../../helpers/resHelp';
 
-const portRedis = process.env.REDIS_URI || 6379;
-
-const host = process.env.NODE_ENV === 'production' ? { host: 'redis' } : null;
-
-const redisClient = redis.createClient({ host, port: portRedis });
-// const redisClient = redis.createClient(portRedis);
 
 const cachedSearch = (req, res, next) => {
     const { keyword } = req.query;

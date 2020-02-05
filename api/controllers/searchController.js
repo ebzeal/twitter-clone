@@ -1,14 +1,8 @@
-import redis from 'redis';
+import redisClient from '../config/redisConfig';
 
 import response from '../helpers/resHelp';
 import Tweet from '../models/Tweet';
 import User from '../models/User';
-
-const portRedis = process.env.REDIS_URI || 6379;
-
-const host = process.env.NODE_ENV === 'production' ? { host: 'redis' } : null;
-
-const redisClient = redis.createClient({ host, port: portRedis });
 
 /**
  * @class SearchController

@@ -1,4 +1,4 @@
-import redis from 'redis';
+import redisClient from '../config/redisConfig';
 import TweetHelpers from '../helpers/tweetHelp';
 import response from '../helpers/resHelp';
 
@@ -6,11 +6,6 @@ import tweetDB from '../models/Tweet';
 
 const Tweet = tweetDB;
 
-const portRedis = process.env.REDIS_URI || 6379;
-
-const host = process.env.NODE_ENV === 'production' ? { host: 'redis' } : null;
-
-const redisClient = redis.createClient({ host, port: portRedis });
 
 /**
  * @class TweetController
