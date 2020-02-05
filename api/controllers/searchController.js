@@ -1,6 +1,6 @@
-import query from '../config/dbConnection';
 import response from '../helpers/resHelp';
-import { searchTweetQuery, searchUserQuery } from '../models/sqlQueries';
+import Tweet from '../models/Tweet';
+import User from '../models/User';
 
 /**
  * @class SearchController
@@ -18,11 +18,31 @@ class SearchController {
   static async searchAll(req, res) {
     try {
       const { keyword } = req.query;
-      const searchTweets = await query(searchTweetQuery, [keyword]);
-      const searchUsers = await query(searchUserQuery, [keyword]);
+      const searchKey = RegExp(keyword, 'i');
+      const searchTweets = await Tweet.find({
+        $or: [
+          { tweet: searchKey },
+          {
+            reply: {
+              $elemMatch: {
+                reply: searchKey
+              }
+            }
+          }
 
-      const searchResult = { Tweets: [searchTweets.rows], Users: [searchUsers.rows] };
-      return (searchTweets.rowCount > 0 || searchUsers.rowCount > 0)
+        ]
+      });
+
+      const searchUsers = await User.find({
+        $or: [
+          { email: searchKey },
+          { userName: searchKey }
+
+        ]
+      });
+
+      const searchResult = { Tweets: [searchTweets], Users: [searchUsers] };
+      return (searchTweets || searchUsers)
         ? response(res, 201, 'success', `All results with the keyword '${keyword}' `, '', searchResult)
         : response(res, 404, 'failure', 'No Search found', '');
     } catch (err) {

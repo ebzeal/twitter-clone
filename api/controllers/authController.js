@@ -1,12 +1,12 @@
 /* eslint-disable max-len */
+import userDB from '../models/User';
 import tokenHelp from '../helpers/tokenHelp';
-import query from '../config/dbConnection';
 import passwordHelp from '../helpers/passwordHelp';
 import response from '../helpers/resHelp';
 import UtilHelp from '../helpers/utilsHelp';
-import {
-  queryUserByEmail, queryUserByName, queryUserByPhone, queryInsertUser, queryUser
-} from '../models/sqlQueries';
+import UserHelp from '../helpers/userHelp';
+
+const User = userDB;
 
 /**
  * @class authController
@@ -25,27 +25,34 @@ class AuthController {
 
       const { email, userName, phone } = inputObj;
 
-      const { rows } = await query(queryUserByEmail, [email]);
-      let userNameResult = await query(queryUserByName, [userName]);
-      let phoneResult = await query(queryUserByPhone, [phone]);
-      userNameResult = userNameResult.rows;
-      phoneResult = phoneResult.rows;
+      const foundUser = await UserHelp.findUser(userName, email, phone);
 
-      if (rows[0]) {
+      if (foundUser !== null) {
+        if (foundUser.userName === userName) {
+          return response(res, 400, 'failure', 'This username already exists');
+        }
+
+        if (foundUser.email === email) {
+          return response(res, 400, 'failure', 'Another user is registered with this email');
+        }
+
+        if (foundUser.phone === phone) {
+          return response(res, 400, 'failure', 'This phone number is registered with another user');
+        }
         return response(res, 400, 'failure', 'This user already exists');
       }
-      if (userNameResult[0]) {
-        return response(res, 400, 'failure', 'This username already exists');
-      }
-      if (phoneResult[0]) {
-        return response(res, 400, 'failure', 'This phone number is registered with another user');
-      }
+
 
       const hashedPassword = await passwordHelp.hashPassword(req.body.password);
-      const userDetails = [email, userName, phone, hashedPassword];
 
-      const newUser = await query(queryInsertUser, userDetails);
-      const createdUser = newUser.rows[0];
+      const newUser = new User({
+        email,
+        userName,
+        phone,
+        password: hashedPassword
+      });
+
+      const createdUser = await newUser.save();
 
       const payload = {
         userId: createdUser.id,
@@ -75,10 +82,24 @@ class AuthController {
 
       const { user } = inputObj;
 
-      const { rows } = await query(queryUser, [user]);
-      const foundUser = rows[0];
+      // const foundUser = await UserHelp.findUser(user, user, user);
 
-      if (!foundUser) {
+      const foundUser = await User.findOne({
+        $or: [
+          {
+            userName: user
+          },
+          {
+            email: user
+          },
+          {
+            phone: user
+          }
+        ]
+      });
+
+
+      if (foundUser === null) {
         return response(res, 404, 'failure', 'Your login information is not correct');
       }
       const isValidPassword = passwordHelp.verifyPassword(req.body.password, foundUser.password);

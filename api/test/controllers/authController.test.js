@@ -3,13 +3,14 @@
 /* eslint-disable semi */
 /* eslint-disable indent */
 import supertest from 'supertest';
+import mongoose from 'mongoose';
 
 import app from '../../..';
-import query from '../../config/dbConnection';
 
 const request = supertest(app);
 
 const newUser = {
+    _id: '5e396f0dbe77b11373fc327c',
     email: 'barln@ney.com',
     userName: 'barnleys',
     phone: '+2348099678900',
@@ -69,8 +70,9 @@ const badPassword = {
 };
 
 afterAll(async () => {
-    await query('DELETE FROM users WHERE userName=$1', [newUser.userName]);
-});
+    await mongoose.connect(process.env.DATABASE_URL_TEST);
+    await mongoose.connection.collection('users').drop()
+})
 
 describe('new user sign up POST/', () => {
     it('should return new user details', async () => {
@@ -91,7 +93,7 @@ describe('new user sign up POST/', () => {
         const { status, data: { statusCode, message, payload } } = response.body;
         expect(status).toEqual('failure')
         expect(statusCode).toBe(400)
-        expect(message).toEqual('This user already exists')
+        expect(message).toEqual('Another user is registered with this email')
         expect(payload).toBeFalsy()
     })
 

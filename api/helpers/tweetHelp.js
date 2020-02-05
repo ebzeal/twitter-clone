@@ -1,12 +1,11 @@
-import query from '../config/dbConnection';
 
+import tweetDB from '../models/Tweet';
+import tagDB from '../models/Tag';
+import mentionDB from '../models/Mention';
 
-import {
-  addMentionsQuery,
-  addTagQuery,
-  tweetByIdQuery,
-} from '../models/sqlQueries';
-
+const Tweet = tweetDB;
+const Tag = tagDB;
+const Mention = mentionDB;
 /**
  * @class TweetHelpers
  * @description Handles tweet helper methods for TweetController class
@@ -20,8 +19,8 @@ class TweetHelpers {
     * @memberof TweetHelpers
     */
   static async getTweet(id) {
-    const result = await query(tweetByIdQuery, [id]);
-    return result.rows[0];
+    const result = await Tweet.findById(id);
+    return result;
   }
 
   /**
@@ -52,13 +51,32 @@ class TweetHelpers {
         tweetId = savedTweetId;
       }
 
+      const allTags = [];
       tags.map(
-        async (tag) => query(addTagQuery, [userId, tweetId, replyId, tag])
+        (tag) => allTags.push({ tag })
       );
 
+      const allMentions = [];
       mentions.map(
-        async (mention) => query(addMentionsQuery, [userId, tweetId, replyId, mention])
+        (mention) => allMentions.push({ mention })
       );
+
+      const saveTag = new Tag({
+        user: userId,
+        tweet: tweetId,
+        reply: replyId,
+        tags: allTags
+      });
+
+      const saveMention = new Mention({
+        user: userId,
+        tweet: tweetId,
+        reply: replyId,
+        mentions: allMentions
+      });
+
+      saveTag.save();
+      saveMention.save();
     } catch (err) {
       return err;
     }

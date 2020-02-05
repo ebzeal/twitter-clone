@@ -1,12 +1,9 @@
-import query from '../config/dbConnection';
-import TweetHelpers from '../helpers/tweetHelpers';
+import TweetHelpers from '../helpers/tweetHelp';
 import response from '../helpers/resHelp';
 
-import {
-  addTweetQuery,
-  addReplyQuery,
-  deleteTweetQuery
-} from '../models/sqlQueries';
+import tweetDB from '../models/Tweet';
+
+const Tweet = tweetDB;
 
 /**
  * @class TweetController
@@ -26,12 +23,16 @@ class TweetController {
       const { userId } = req.user;
       const { tweet } = req.body;
 
-      const { rows } = await query(addTweetQuery, [userId, tweet]);
-      const savedTweet = await TweetHelpers.getTweet(rows[0].id);
+      const newTweet = new Tweet({
+        user: userId,
+        tweet
+      });
+
+      const savedTweet = await newTweet.save();
 
       await TweetHelpers.addTagsAndMentions(tweet, userId, savedTweet.id, 'aTweet');
 
-      if (savedTweet) response(res, 201, 'success', 'Tweet has been posted', '', rows[0]);
+      if (savedTweet) response(res, 201, 'success', 'Tweet has been posted', '', savedTweet);
     } catch (err) {
       return response(res, 500, 'failure', '', err.message);
     }
@@ -72,13 +73,15 @@ class TweetController {
       const { userId } = req.query;
       const { reply } = req.body;
 
-      const { rows } = await query(addReplyQuery, [userId, id, reply]);
+      const replyTweet = await Tweet.findByIdAndUpdate({ _id: id }, {
+        $push: {
+          reply: { user: userId, reply }
+        }
+      });
 
-      await TweetHelpers.addTagsAndMentions(reply, userId, rows[0].id, 'aReply');
+      await TweetHelpers.addTagsAndMentions(reply, userId, replyTweet.id, 'aReply');
 
-      const tweet = rows[0];
-
-      if (tweet) response(res, 201, 'success', 'Your reply has been added', '', tweet);
+      if (replyTweet) response(res, 201, 'success', 'Your reply has been added', '', replyTweet);
     } catch (err) {
       return response(res, 500, 'failure', '', err.message);
     }
@@ -97,11 +100,14 @@ class TweetController {
       const { id } = req.params;
 
       const tweet = await TweetHelpers.getTweet(id);
+      if (!tweet) return response(res, 401, 'failure', 'This tweet cannot be found', '');
 
-      if (tweet.user_id === req.user.userId) {
-        const isDeleted = await query(deleteTweetQuery, [id]);
+      const tweetId = tweet.user;
 
-        if (isDeleted.rowCount > 0) response(res, 201, 'success', 'Tweet deleted', '');
+      if (tweetId == req.user.userId) {
+        const isDeleted = await Tweet.deleteOne({ _id: id });
+
+        if (isDeleted) response(res, 201, 'success', 'Tweet deleted', '');
       } else {
         return response(res, 401, 'failure', 'You cannot delete another user\'s tweet', '');
       }
