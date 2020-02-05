@@ -1,3 +1,4 @@
+import redis from 'redis';
 import userDB from '../models/User';
 import tweetDB from '../models/Tweet';
 
@@ -6,6 +7,11 @@ import response from '../helpers/resHelp';
 const User = userDB;
 const Tweet = tweetDB;
 
+const portRedis = process.env.REDIS_URI || 6379;
+
+const host = process.env.NODE_ENV === 'production' ? { host: 'redis' } : null;
+
+const redisClient = redis.createClient({ host, port: portRedis });
 
 /**
  * @class UserController
@@ -73,6 +79,9 @@ class UserController {
       }
 
       const tweets = await Tweet.find({ user: id });
+
+      if (tweets) redisClient.setex(id, 3600, JSON.stringify(tweets));
+
 
       return tweets ? response(res, 201, 'success', 'User timeline', '', tweets) : response(res, 200, 'success', 'No tweets yet', '', tweets);
     } catch (err) {

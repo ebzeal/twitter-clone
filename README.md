@@ -39,10 +39,15 @@ These tests ensure that no functionality is broken
 # Built With
 
 NodeJs (JavaScript ES6)
+
 MongoDB
+
 Redis
+
 POSTMAN
+
 Jest
+
 Express
 
 # Contributing
